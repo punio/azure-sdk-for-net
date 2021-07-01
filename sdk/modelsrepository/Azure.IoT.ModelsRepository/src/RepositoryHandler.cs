@@ -61,6 +61,20 @@ namespace Azure.IoT.ModelsRepository
         {
             var processedModels = new Dictionary<string, string>();
             Queue<string> toProcessModels = PrepareWork(dtmis);
+            bool tryFromExpanded = false;
+
+            if (dependencyResolution == ModelDependencyResolution.Enabled)
+            {
+                ModelsRepositoryMetadata repositoryMetadata = async
+                    ? await FetchMetadataAsync(cancellationToken).ConfigureAwait(false)
+                    : FetchMetadata(cancellationToken);
+                if (repositoryMetadata != null &&
+                    repositoryMetadata.Features != null &&
+                    repositoryMetadata.Features.Expanded)
+                {
+                    tryFromExpanded = true;
+                }
+            }
 
             while (toProcessModels.Count != 0)
             {
@@ -75,9 +89,9 @@ namespace Azure.IoT.ModelsRepository
 
                 ModelsRepositoryEventSource.Instance.ProcessingDtmi(targetDtmi);
 
-                FetchResult result = async
-                    ? await FetchAsync(targetDtmi, dependencyResolution, cancellationToken).ConfigureAwait(false)
-                    : Fetch(targetDtmi, dependencyResolution, cancellationToken);
+                FetchModelResult result = async
+                    ? await FetchModelAsync(targetDtmi, tryFromExpanded, cancellationToken).ConfigureAwait(false)
+                    : FetchModel(targetDtmi, tryFromExpanded, cancellationToken);
 
                 if (result.FromExpanded)
                 {
@@ -128,14 +142,24 @@ namespace Azure.IoT.ModelsRepository
             return processedModels;
         }
 
-        private Task<FetchResult> FetchAsync(string dtmi, ModelDependencyResolution dependencyResolution, CancellationToken cancellationToken)
+        private Task<FetchModelResult> FetchModelAsync(string dtmi, bool tryFromExpanded, CancellationToken cancellationToken)
         {
-            return _modelFetcher.FetchAsync(dtmi, _repositoryUri, dependencyResolution, cancellationToken);
+            return _modelFetcher.FetchModelAsync(dtmi, _repositoryUri, tryFromExpanded, cancellationToken);
         }
 
-        private FetchResult Fetch(string dtmi, ModelDependencyResolution dependencyResolution, CancellationToken cancellationToken)
+        private FetchModelResult FetchModel(string dtmi, bool tryFromExpanded, CancellationToken cancellationToken)
         {
-            return _modelFetcher.Fetch(dtmi, _repositoryUri, dependencyResolution, cancellationToken);
+            return _modelFetcher.FetchModel(dtmi, _repositoryUri, tryFromExpanded, cancellationToken);
+        }
+
+        private Task<ModelsRepositoryMetadata> FetchMetadataAsync(CancellationToken cancellationToken)
+        {
+            return _modelFetcher.FetchMetadataAsync(_repositoryUri, cancellationToken);
+        }
+
+        private ModelsRepositoryMetadata FetchMetadata(CancellationToken cancellationToken)
+        {
+            return _modelFetcher.FetchMetadata(_repositoryUri, cancellationToken);
         }
 
         private static Queue<string> PrepareWork(IEnumerable<string> dtmis)

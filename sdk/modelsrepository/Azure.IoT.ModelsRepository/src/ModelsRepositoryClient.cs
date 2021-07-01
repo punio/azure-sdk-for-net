@@ -26,7 +26,7 @@ namespace Azure.IoT.ModelsRepository
         /// with the model dependency resolution option of TryFromExpanded.
         /// </summary>
         public ModelsRepositoryClient() : this(new Uri(ModelsRepositoryConstants.DefaultModelsRepository),
-            new ModelsRepositoryClientOptions(dependencyResolution: ModelDependencyResolution.TryFromExpanded))
+            new ModelsRepositoryClientOptions())
         { }
 
         /// <summary>
@@ -79,13 +79,13 @@ namespace Azure.IoT.ModelsRepository
             "AZC0015:Unexpected client method return type.",
             Justification = "Item lookup is optimized with a dictionary type, we do not expect any more than ~20 items to be returned.")]
         public virtual async Task<IDictionary<string, string>> GetModelsAsync(
-            string dtmi, ModelDependencyResolution? dependencyResolution = null, CancellationToken cancellationToken = default)
+            string dtmi, ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled, CancellationToken cancellationToken = default)
         {
             using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(ModelsRepositoryClient)}.{nameof(GetModels)}");
             scope.Start();
             try
             {
-                return await _repositoryHandler.ProcessAsync(dtmi, dependencyResolution ?? _clientOptions.DependencyResolution, cancellationToken).ConfigureAwait(false);
+                return await _repositoryHandler.ProcessAsync(dtmi, dependencyResolution, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -110,14 +110,14 @@ namespace Azure.IoT.ModelsRepository
             "AZC0015:Unexpected client method return type.",
             Justification = "Item lookup is optimized with a dictionary type, we do not expect any more than ~20 items to be returned.")]
         public virtual IDictionary<string, string> GetModels(
-            string dtmi, ModelDependencyResolution? dependencyResolution = null, CancellationToken cancellationToken = default)
+            string dtmi, ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled, CancellationToken cancellationToken = default)
         {
             using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(ModelsRepositoryClient)}.{nameof(GetModels)}");
             scope.Start();
 
             try
             {
-                return _repositoryHandler.Process(dtmi, dependencyResolution ?? _clientOptions.DependencyResolution, cancellationToken);
+                return _repositoryHandler.Process(dtmi, dependencyResolution, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -142,14 +142,14 @@ namespace Azure.IoT.ModelsRepository
             "AZC0015:Unexpected client method return type.",
             Justification = "Item lookup is optimized with a dictionary type, we do not expect any more than ~20 items to be returned.")]
         public virtual async Task<IDictionary<string, string>> GetModelsAsync(
-            IEnumerable<string> dtmis, ModelDependencyResolution? dependencyResolution = null, CancellationToken cancellationToken = default)
+            IEnumerable<string> dtmis, ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled, CancellationToken cancellationToken = default)
         {
             using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(ModelsRepositoryClient)}.{nameof(GetModels)}");
             scope.Start();
 
             try
             {
-                return await _repositoryHandler.ProcessAsync(dtmis, dependencyResolution ?? _clientOptions.DependencyResolution, cancellationToken).ConfigureAwait(false);
+                return await _repositoryHandler.ProcessAsync(dtmis, dependencyResolution, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -174,14 +174,14 @@ namespace Azure.IoT.ModelsRepository
             "AZC0015:Unexpected client method return type.",
             Justification = "Item lookup is optimized with a dictionary type, we do not expect any more than ~20 items to be returned.")]
         public virtual IDictionary<string, string> GetModels(
-            IEnumerable<string> dtmis, ModelDependencyResolution? dependencyResolution = null, CancellationToken cancellationToken = default)
+            IEnumerable<string> dtmis, ModelDependencyResolution dependencyResolution = ModelDependencyResolution.Enabled, CancellationToken cancellationToken = default)
         {
             using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(ModelsRepositoryClient)}.{nameof(GetModels)}");
             scope.Start();
 
             try
             {
-                return _repositoryHandler.Process(dtmis, dependencyResolution ?? _clientOptions.DependencyResolution, cancellationToken);
+                return _repositoryHandler.Process(dtmis, dependencyResolution, cancellationToken);
             }
             catch (Exception ex)
             {

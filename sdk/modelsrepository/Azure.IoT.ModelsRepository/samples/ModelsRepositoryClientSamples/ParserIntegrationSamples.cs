@@ -28,7 +28,8 @@ namespace Azure.IoT.ModelsRepository.Samples
         public static async Task ParseAndGetModelsWithExtensionAsync()
         {
             #region Snippet:ModelsRepositorySamplesParserIntegrationParseAndGetModelsAsync
-
+            // PH
+            /*
             var client = new ModelsRepositoryClient(new ModelsRepositoryClientOptions(dependencyResolution: ModelDependencyResolution.Disabled));
             var dtmi = "dtmi:com:example:TemperatureController;1";
             IDictionary<string, string> models = await client.GetModelsAsync(dtmi).ConfigureAwait(false);
@@ -39,7 +40,7 @@ namespace Azure.IoT.ModelsRepository.Samples
             };
             IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.Take(1).ToArray());
             Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities.");
-
+            */
             #endregion Snippet:ModelsRepositorySamplesParserIntegrationParseAndGetModelsAsync
         }
     }

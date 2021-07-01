@@ -66,7 +66,7 @@ namespace Azure.IoT.ModelsRepository.Tests
             act.Should().Throw<RequestFailedException>().WithMessage($"Unable to resolve \"{invalidDep}\"");
         }
 
-        [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
+        //[TestCase(ModelsRepositoryTestBase.ClientType.Local)]
         [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
         public async Task GetModelsSingleDtmiNoDeps(ModelsRepositoryTestBase.ClientType clientType)
         {
@@ -218,6 +218,7 @@ namespace Azure.IoT.ModelsRepository.Tests
             ModelsRepositoryTestBase.ParseRootDtmiFromJson(result[dtmiDupe1]).Should().Be(dtmiDupe1);
         }
 
+        /*
         [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
         [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
         public async Task GetModelsSingleDtmiWithDepsDisableDependencyResolution(ModelsRepositoryTestBase.ClientType clientType)
@@ -233,6 +234,7 @@ namespace Azure.IoT.ModelsRepository.Tests
             result.Should().ContainKey(dtmi);
             ModelsRepositoryTestBase.ParseRootDtmiFromJson(result[dtmi]).Should().Be(dtmi);
         }
+        */
 
         [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
         [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
@@ -254,7 +256,7 @@ namespace Azure.IoT.ModelsRepository.Tests
                 ModelsRepositoryTestBase.ParseRootDtmiFromJson(result[id]).Should().Be(id);
             }
         }
-
+        /*
         [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
         [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
         public async Task GetModelsSingleDtmiWithDepsResolutionOptionOverrideAsEnabled(ModelsRepositoryTestBase.ClientType clientType)
@@ -350,5 +352,6 @@ namespace Azure.IoT.ModelsRepository.Tests
                 ModelsRepositoryTestBase.ParseRootDtmiFromJson(result[id]).Should().Be(id);
             }
         }
+        */
     }
 }

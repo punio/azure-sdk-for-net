@@ -53,5 +53,10 @@
       <LinkBase>Shared\Azure.Core</LinkBase>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="C:\Users\paymaunh\dev\source\azure-sdk-for-net\artifacts\obj\Azure.IoT.ModelsRepository\Debug\netstandard2.0\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

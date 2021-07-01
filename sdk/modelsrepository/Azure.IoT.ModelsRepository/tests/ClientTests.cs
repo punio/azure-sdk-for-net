@@ -40,7 +40,7 @@ namespace Azure.IoT.ModelsRepository.Tests
             Type eventSourceType = typeof(ModelsRepositoryEventSource);
 
             eventSourceType.Should().NotBeNull();
-            EventSource.GetName(eventSourceType).Should().Be(ModelsRepositoryConstants.ModelRepositoryEventSourceName);
+            EventSource.GetName(eventSourceType).Should().Be(ModelsRepositoryConstants.ModelsRepositoryEventSourceName);
             EventSource.GetGuid(eventSourceType).Should().Be(Guid.Parse("7678f8d4-81db-5fd2-39fc-23552d86b171"));
             EventSource.GenerateManifest(eventSourceType, "assemblyPathToIncludeInManifest").Should().NotBeNullOrEmpty();
         }
