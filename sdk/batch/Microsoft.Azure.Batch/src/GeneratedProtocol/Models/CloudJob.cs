@@ -48,6 +48,8 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// <param name="previousStateTransitionTime">The time at which the Job
         /// entered its previous state.</param>
         /// <param name="priority">The priority of the Job.</param>
+        /// <param name="maxParallelTasks">The maximum number of tasks that can
+        /// be executed in parallel for the job.</param>
         /// <param name="constraints">The execution constraints for the
         /// Job.</param>
         /// <param name="jobManagerTask">Details of a Job Manager Task to be

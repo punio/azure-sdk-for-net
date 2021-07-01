@@ -76,8 +76,8 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// Gets or sets the Azure Storage Account key.
         /// </summary>
         /// <remarks>
-        /// This property is mutually exclusive with sasKey and one must be
-        /// specified.
+        /// This property is mutually exclusive with both sasKey and identity;
+        /// exactly one must be specified.
         /// </remarks>
         [JsonProperty(PropertyName = "accountKey")]
         public string AccountKey { get; set; }
@@ -86,8 +86,8 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// Gets or sets the Azure Storage SAS token.
         /// </summary>
         /// <remarks>
-        /// This property is mutually exclusive with accountKey and one must be
-        /// specified.
+        /// This property is mutually exclusive with both accountKey and
+        /// identity; exactly one must be specified.
         /// </remarks>
         [JsonProperty(PropertyName = "sasKey")]
         public string SasKey { get; set; }
