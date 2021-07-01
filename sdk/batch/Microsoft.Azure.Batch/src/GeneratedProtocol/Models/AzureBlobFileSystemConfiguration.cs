@@ -41,7 +41,9 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// <param name="sasKey">The Azure Storage SAS token.</param>
         /// <param name="blobfuseOptions">Additional command line options to
         /// pass to the mount command.</param>
-        public AzureBlobFileSystemConfiguration(string accountName, string containerName, string relativeMountPath, string accountKey = default(string), string sasKey = default(string), string blobfuseOptions = default(string))
+        /// <param name="identityReference">The reference to the user assigned
+        /// identity to use to access containerName</param>
+        public AzureBlobFileSystemConfiguration(string accountName, string containerName, string relativeMountPath, string accountKey = default(string), string sasKey = default(string), string blobfuseOptions = default(string), ComputeNodeIdentityReference identityReference = default(ComputeNodeIdentityReference))
         {
             AccountName = accountName;
             ContainerName = containerName;
@@ -49,6 +51,7 @@ namespace Microsoft.Azure.Batch.Protocol.Models
             SasKey = sasKey;
             BlobfuseOptions = blobfuseOptions;
             RelativeMountPath = relativeMountPath;
+            IdentityReference = identityReference;
             CustomInit();
         }
 
@@ -111,6 +114,17 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// </remarks>
         [JsonProperty(PropertyName = "relativeMountPath")]
         public string RelativeMountPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reference to the user assigned identity to use to
+        /// access containerName
+        /// </summary>
+        /// <remarks>
+        /// This property is mutually exclusive with both accountKey and
+        /// sasKey; exactly one must be specified.
+        /// </remarks>
+        [JsonProperty(PropertyName = "identityReference")]
+        public ComputeNodeIdentityReference IdentityReference { get; set; }
 
     }
 }

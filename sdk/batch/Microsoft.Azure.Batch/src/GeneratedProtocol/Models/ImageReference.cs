@@ -47,13 +47,18 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// or
         /// /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Compute/galleries/{galleryName}/images/{imageDefinitionName}
         /// for always defaulting to the latest image version.</param>
-        public ImageReference(string publisher = default(string), string offer = default(string), string sku = default(string), string version = default(string), string virtualMachineImageId = default(string))
+        /// <param name="exactVersion">The specific version of the platform
+        /// image or marketplace image used to create the node. This read-only
+        /// field differs from 'version' only if the value specified for
+        /// 'version' when the pool was created was 'latest'.</param>
+        public ImageReference(string publisher = default(string), string offer = default(string), string sku = default(string), string version = default(string), string virtualMachineImageId = default(string), string exactVersion = default(string))
         {
             Publisher = publisher;
             Offer = offer;
             Sku = sku;
             Version = version;
             VirtualMachineImageId = virtualMachineImageId;
+            ExactVersion = exactVersion;
             CustomInit();
         }
 
@@ -124,6 +129,15 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// </remarks>
         [JsonProperty(PropertyName = "virtualMachineImageId")]
         public string VirtualMachineImageId { get; set; }
+
+        /// <summary>
+        /// Gets the specific version of the platform image or marketplace
+        /// image used to create the node. This read-only field differs from
+        /// 'version' only if the value specified for 'version' when the pool
+        /// was created was 'latest'.
+        /// </summary>
+        [JsonProperty(PropertyName = "exactVersion")]
+        public string ExactVersion { get; private set; }
 
     }
 }

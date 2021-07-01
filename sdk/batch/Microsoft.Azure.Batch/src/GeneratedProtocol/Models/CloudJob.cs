@@ -73,7 +73,7 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// Job.</param>
         /// <param name="stats">Resource usage statistics for the entire
         /// lifetime of the Job.</param>
-        public CloudJob(string id = default(string), string displayName = default(string), bool? usesTaskDependencies = default(bool?), string url = default(string), string eTag = default(string), System.DateTime? lastModified = default(System.DateTime?), System.DateTime? creationTime = default(System.DateTime?), JobState? state = default(JobState?), System.DateTime? stateTransitionTime = default(System.DateTime?), JobState? previousState = default(JobState?), System.DateTime? previousStateTransitionTime = default(System.DateTime?), int? priority = default(int?), JobConstraints constraints = default(JobConstraints), JobManagerTask jobManagerTask = default(JobManagerTask), JobPreparationTask jobPreparationTask = default(JobPreparationTask), JobReleaseTask jobReleaseTask = default(JobReleaseTask), IList<EnvironmentSetting> commonEnvironmentSettings = default(IList<EnvironmentSetting>), PoolInformation poolInfo = default(PoolInformation), OnAllTasksComplete? onAllTasksComplete = default(OnAllTasksComplete?), OnTaskFailure? onTaskFailure = default(OnTaskFailure?), JobNetworkConfiguration networkConfiguration = default(JobNetworkConfiguration), IList<MetadataItem> metadata = default(IList<MetadataItem>), JobExecutionInformation executionInfo = default(JobExecutionInformation), JobStatistics stats = default(JobStatistics))
+        public CloudJob(string id = default(string), string displayName = default(string), bool? usesTaskDependencies = default(bool?), string url = default(string), string eTag = default(string), System.DateTime? lastModified = default(System.DateTime?), System.DateTime? creationTime = default(System.DateTime?), JobState? state = default(JobState?), System.DateTime? stateTransitionTime = default(System.DateTime?), JobState? previousState = default(JobState?), System.DateTime? previousStateTransitionTime = default(System.DateTime?), int? priority = default(int?), int? maxParallelTasks = default(int?), JobConstraints constraints = default(JobConstraints), JobManagerTask jobManagerTask = default(JobManagerTask), JobPreparationTask jobPreparationTask = default(JobPreparationTask), JobReleaseTask jobReleaseTask = default(JobReleaseTask), IList<EnvironmentSetting> commonEnvironmentSettings = default(IList<EnvironmentSetting>), PoolInformation poolInfo = default(PoolInformation), OnAllTasksComplete? onAllTasksComplete = default(OnAllTasksComplete?), OnTaskFailure? onTaskFailure = default(OnTaskFailure?), JobNetworkConfiguration networkConfiguration = default(JobNetworkConfiguration), IList<MetadataItem> metadata = default(IList<MetadataItem>), JobExecutionInformation executionInfo = default(JobExecutionInformation), JobStatistics stats = default(JobStatistics))
         {
             Id = id;
             DisplayName = displayName;
@@ -87,6 +87,7 @@ namespace Microsoft.Azure.Batch.Protocol.Models
             PreviousState = previousState;
             PreviousStateTransitionTime = previousStateTransitionTime;
             Priority = priority;
+            MaxParallelTasks = maxParallelTasks;
             Constraints = constraints;
             JobManagerTask = jobManagerTask;
             JobPreparationTask = jobPreparationTask;
@@ -212,6 +213,20 @@ namespace Microsoft.Azure.Batch.Protocol.Models
         /// </remarks>
         [JsonProperty(PropertyName = "priority")]
         public int? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum number of tasks that can be executed in
+        /// parallel for the job.
+        /// </summary>
+        /// <remarks>
+        /// The value of maxParallelTasks must be -1 or greater than 0 if
+        /// specified. If not specified, the default value is -1, which means
+        /// there's no limit to the number of tasks that can be run at once.
+        /// You can update a job's maxParallelTasks after it has been created
+        /// using the update job API.
+        /// </remarks>
+        [JsonProperty(PropertyName = "maxParallelTasks")]
+        public int? MaxParallelTasks { get; set; }
 
         /// <summary>
         /// Gets or sets the execution constraints for the Job.
