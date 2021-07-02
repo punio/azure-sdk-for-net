@@ -89,15 +89,21 @@ namespace Azure.IoT.ModelsRepository.Fetchers
             using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(FileModelFetcher)}.{nameof(FetchMetadata)}");
             scope.Start();
 
-            string metadataPath = DtmiConventions.GetMetadataUri(repositoryUri).AbsolutePath;
+            string metadataPath = DtmiConventions.GetMetadataUri(repositoryUri).LocalPath;
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (File.Exists(metadataPath))
                 {
                     string content = File.ReadAllText(metadataPath, Encoding.UTF8);
                     return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
                 }
+            }
+            catch (OperationCanceledException ex)
+            {
+                scope.Failed(ex);
+                throw;
             }
             catch (Exception ex)
             {

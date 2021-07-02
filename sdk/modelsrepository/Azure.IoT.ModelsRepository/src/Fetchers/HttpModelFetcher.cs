@@ -254,8 +254,14 @@ namespace Azure.IoT.ModelsRepository.Fetchers
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 string content = EvaluatePath(metadataPath, cancellationToken);
                 return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
+            }
+            catch (OperationCanceledException ex)
+            {
+                scope.Failed(ex);
+                throw;
             }
             catch (Exception ex)
             {
@@ -277,8 +283,14 @@ namespace Azure.IoT.ModelsRepository.Fetchers
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 string content = await EvaluatePathAsync(metadataPath, cancellationToken).ConfigureAwait(false);
                 return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
+            }
+            catch (OperationCanceledException ex)
+            {
+                scope.Failed(ex);
+                throw;
             }
             catch (Exception ex)
             {

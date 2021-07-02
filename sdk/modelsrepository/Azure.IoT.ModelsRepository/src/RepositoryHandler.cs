@@ -26,14 +26,17 @@ namespace Azure.IoT.ModelsRepository
 
             _clientOptions = options;
             _clientDiagnostics = clientDiagnostics;
-            _modelFetcher = repositoryUri.Scheme == ModelsRepositoryConstants.UriFileSchema
-                ? _modelFetcher = new FileModelFetcher(_clientDiagnostics)
-                : _modelFetcher = new HttpModelFetcher(_clientDiagnostics, _clientOptions);
             _clientId = Guid.NewGuid();
-
             _repositoryUri = repositoryUri;
-
+            _modelFetcher = GetModelFetcher();
             ModelsRepositoryEventSource.Instance.InitFetcher(_clientId, repositoryUri.Scheme);
+        }
+
+        public IModelFetcher GetModelFetcher()
+        {
+            return _repositoryUri.Scheme == ModelsRepositoryConstants.UriFileSchema
+                ? new FileModelFetcher(_clientDiagnostics)
+                : new HttpModelFetcher(_clientDiagnostics, _clientOptions);
         }
 
         public async Task<IDictionary<string, string>> ProcessAsync(string dtmi, ModelDependencyResolution dependencyResolution, CancellationToken cancellationToken)
