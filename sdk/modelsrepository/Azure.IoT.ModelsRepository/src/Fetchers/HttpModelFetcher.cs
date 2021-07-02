@@ -145,7 +145,7 @@ namespace Azure.IoT.ModelsRepository.Fetchers
 
         private static Queue<string> PrepareWork(string dtmi, Uri repositoryUri, bool tryExpanded)
         {
-            Queue<string> work = new Queue<string>();
+            var work = new Queue<string>();
 
             if (tryExpanded)
             {
@@ -247,37 +247,46 @@ namespace Azure.IoT.ModelsRepository.Fetchers
 
         public ModelsRepositoryMetadata FetchMetadata(Uri repositoryUri, CancellationToken cancellationToken = default)
         {
-            string metadataPath = $"{repositoryUri.AbsoluteUri}{ModelsRepositoryConstants.ModelsRepositoryMetadataFile}";
+            using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(HttpModelFetcher)}.{nameof(FetchMetadata)}");
+            scope.Start();
+
+            string metadataPath = DtmiConventions.GetMetadataUri(repositoryUri).AbsoluteUri;
 
             try
             {
                 string content = EvaluatePath(metadataPath, cancellationToken);
                 return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
             }
-            catch
+            catch (Exception ex)
             {
                 // Exceptions thrown from fetching Repository Metadata should not be terminal.
                 ModelsRepositoryEventSource.Instance.FailureProcessingRepositoryMetadata(metadataPath);
+                scope.Failed(ex);
             }
 
+            ModelsRepositoryEventSource.Instance.FailureProcessingRepositoryMetadata(metadataPath);
             return null;
         }
 
         public async Task<ModelsRepositoryMetadata> FetchMetadataAsync(Uri repositoryUri, CancellationToken cancellationToken = default)
         {
-            string metadataPath = $"{repositoryUri.AbsoluteUri}{ModelsRepositoryConstants.ModelsRepositoryMetadataFile}";
+            using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(HttpModelFetcher)}.{nameof(FetchMetadata)}");
+            scope.Start();
+
+            string metadataPath = DtmiConventions.GetMetadataUri(repositoryUri).AbsoluteUri;
 
             try
             {
                 string content = await EvaluatePathAsync(metadataPath, cancellationToken).ConfigureAwait(false);
                 return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
             }
-            catch
+            catch (Exception ex)
             {
                 // Exceptions thrown from fetching Repository Metadata should not be terminal.
-                ModelsRepositoryEventSource.Instance.FailureProcessingRepositoryMetadata(metadataPath);
+                scope.Failed(ex);
             }
 
+            ModelsRepositoryEventSource.Instance.FailureProcessingRepositoryMetadata(metadataPath);
             return null;
         }
     }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Globalization;
 using Azure.Core.Pipeline;
+using System.Text.Json;
 
 namespace Azure.IoT.ModelsRepository.Fetchers
 {
@@ -78,14 +79,34 @@ namespace Azure.IoT.ModelsRepository.Fetchers
             }
         }
 
-        public Task<ModelsRepositoryMetadata> FetchMetadataAsync(Uri repositoryUri, CancellationToken cancellationToken)
+        public Task<ModelsRepositoryMetadata> FetchMetadataAsync(Uri repositoryUri, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(FetchMetadata(repositoryUri, cancellationToken));
         }
 
-        public ModelsRepositoryMetadata FetchMetadata(Uri repositoryUri, CancellationToken cancellationToken)
+        public ModelsRepositoryMetadata FetchMetadata(Uri repositoryUri, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using DiagnosticScope scope = _clientDiagnostics.CreateScope($"{nameof(FileModelFetcher)}.{nameof(FetchMetadata)}");
+            scope.Start();
+
+            string metadataPath = DtmiConventions.GetMetadataUri(repositoryUri).AbsolutePath;
+
+            try
+            {
+                if (File.Exists(metadataPath))
+                {
+                    string content = File.ReadAllText(metadataPath, Encoding.UTF8);
+                    return JsonSerializer.Deserialize<ModelsRepositoryMetadata>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Exceptions thrown from fetching Repository Metadata should not be terminal.
+                scope.Failed(ex);
+            }
+
+            ModelsRepositoryEventSource.Instance.FailureProcessingRepositoryMetadata(metadataPath);
+            return null;
         }
     }
 }

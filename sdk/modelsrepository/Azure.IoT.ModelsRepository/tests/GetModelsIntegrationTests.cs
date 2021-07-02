@@ -66,7 +66,7 @@ namespace Azure.IoT.ModelsRepository.Tests
             act.Should().Throw<RequestFailedException>().WithMessage($"Unable to resolve \"{invalidDep}\"");
         }
 
-        //[TestCase(ModelsRepositoryTestBase.ClientType.Local)]
+        [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
         [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
         public async Task GetModelsSingleDtmiNoDeps(ModelsRepositoryTestBase.ClientType clientType)
         {
@@ -80,7 +80,7 @@ namespace Azure.IoT.ModelsRepository.Tests
         }
 
         [TestCase(ModelsRepositoryTestBase.ClientType.Local)]
-        [TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
+        //[TestCase(ModelsRepositoryTestBase.ClientType.Remote)]
         public async Task GetModelsMultipleDtmisNoDeps(ModelsRepositoryTestBase.ClientType clientType)
         {
             const string dtmi1 = "dtmi:com:example:Thermostat;1";
