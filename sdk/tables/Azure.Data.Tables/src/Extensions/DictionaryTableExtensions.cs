@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 #nullable enable
@@ -220,7 +220,7 @@ namespace Azure.Data.Tables
             {typeof(BinaryData), (property, propertyValue, result) =>  property.SetValue(result, BinaryData.FromBytes(Convert.FromBase64String(propertyValue as string)))},
             {typeof(long), (property, propertyValue, result) =>  property.SetValue(result, long.Parse(propertyValue as string, CultureInfo.InvariantCulture))},
             {typeof(long?), (property, propertyValue, result) =>  property.SetValue(result, long.Parse(propertyValue as string, CultureInfo.InvariantCulture))},
-            {typeof(double), (property, propertyValue, result) =>  property.SetValue(result, propertyValue)},
+            {typeof(double), SetDouble},
             {typeof(double?), (property, propertyValue, result) =>  property.SetValue(result, propertyValue)},
             {typeof(bool), (property, propertyValue, result) =>  property.SetValue(result, (bool)propertyValue)},
             {typeof(bool?), (property, propertyValue, result) =>  property.SetValue(result, (bool?)propertyValue)},
@@ -238,5 +238,33 @@ namespace Azure.Data.Tables
         };
 
         private static Action<PropertyInfo, object, object> SetNullableEnumValue = (property, propertyValue, result) => property.SetValue(result, Enum.Parse(property.PropertyType.GenericTypeArguments[0], propertyValue as string));
+
+        private static void SetDouble(PropertyInfo property, object propertyValue, object result)
+        {
+            // if propertyValue is string and 'NaN'/'-∞'/'∞', set constant value, otherwise exception
+            if (propertyValue is string s)
+            {
+                if (s == double.NaN.ToString(CultureInfo.InvariantCulture))
+                {
+                    property.SetValue(result, double.NaN);
+                }
+                else if (s == double.PositiveInfinity.ToString(CultureInfo.InvariantCulture))
+                {
+                    property.SetValue(result, double.PositiveInfinity);
+                }
+                else if (s == double.NegativeInfinity.ToString(CultureInfo.InvariantCulture))
+                {
+                    property.SetValue(result, double.NegativeInfinity);
+                }
+                else
+                {
+                    property.SetValue(result, propertyValue);
+                }
+            }
+            else
+            {
+                property.SetValue(result, propertyValue);
+            }
+        }
     }
 }
